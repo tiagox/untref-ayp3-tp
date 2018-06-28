@@ -124,23 +124,33 @@ nJson* njson_write(nJson* this, FILE* output) {
 }
 
 void njson_release(nJson* this) {
-	free(this->name);
-	this->name = 0x0;
-
-	free(this->value);
-	this->value = 0x0;
-	this->value_size = 0x0;
-	this->cant_elementos = 0x0;
-	this->write = 0x0;
-
-	if (this->next) {
-		njson_release(this->next);
-		this->next = 0x0;
+	if (this->name) {
+		free(this->name);
+		this->name = 0x0;
 	}
 
-	if (this->children) {
-		njson_release(this->children);
-		this->children = 0x0;
+	if (this->value_size) {
+		free(this->value);
+		this->value = 0x0;
+		this->value_size = 0;
+	}
+
+	this->write = 0x0;
+
+	this->is_array = FALSE;
+
+	if (this->element_count) {
+		for (int i = 0; i < this->element_count; ++i) {
+			njson_release(this->elements[i]);
+
+			free(this->elements[i]);
+			this->elements[i] = 0x0;
+		}
+
+		free(this->elements);
+		this->elements = 0x0;
+
+		this->element_count = 0;
 	}
 }
 
