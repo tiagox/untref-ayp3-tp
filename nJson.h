@@ -25,7 +25,7 @@ typedef enum _err_code {
  * especificos para cada tipo de dato contenido en un nJson.
  * @type writer
  */
-typedef void (*writer)(FILE*, void*, unsigned);
+typedef void (*writer)(FILE*, void*);
 
 /**
  * Estructura base para los nodos de JSON.
@@ -119,39 +119,43 @@ nJson* njson_write(nJson* this, FILE* output);
  */
 void njson_release(nJson* this);
 
+/******************************************************************************
+ * Funciones auxiliares para imprimir tipos de datos soportados por nJson
+ ******************************************************************************/
+
 /**
  * Escribe un nJson como texto en el archivo espeficado.
  */
-void write_njson(FILE* output, void* value, unsigned cantidad);
+void write_njson(FILE* output, void* value);
 
 /**
  * Escribe una cadena de caracteres como texto en el archivo espeficado.
  */
-void write_string(FILE* output, void* value, unsigned cantidad);
+void write_string(FILE* output, void* value);
 
 /**
  * Escribe un entero como texto en el archivo espeficado.
  */
-void write_int(FILE* output, void* value, unsigned cantidad);
+void write_int(FILE* output, void* value);
 
 /**
  * Escribe un booleano como texto en el archivo espeficado.
  */
-void write_boolean(FILE* output, void* value, unsigned cantidad);
+void write_boolean(FILE* output, void* value);
 
 /**
  * Escribe un flotante como texto en el archivo espeficado.
  */
-void write_float(FILE* output, void* value, unsigned cantidad);
+void write_float(FILE* output, void* value);
 
 /**
  * Escribe un flotante de doble presición como texto en el archivo espeficado.
  */
-void write_double(FILE* output, void* value, unsigned cantidad);
+void write_double(FILE* output, void* value);
 
-/*
+/******************************************************************************
  * Funciones necesarias para las consignas de la entrega 3
- */
+ ******************************************************************************/
 
 /*
  * Funcion que busca un Json padre de atributos.

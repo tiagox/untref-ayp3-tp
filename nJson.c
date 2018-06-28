@@ -108,7 +108,7 @@ nJson* njson_write(nJson* this, FILE* output) {
 	}
 
 	if (this->value) {
-		this->write(output, this->value, 0);
+		this->write(output, this->value);
 	}
 
 	if (this->element_count) {
@@ -215,42 +215,31 @@ nJson* modificar_njson(nJson* this, nJson* a_modificar, char* name_atribute, voi
 	return this;
 }
 
-/*******************************************************************************
+/******************************************************************************
  * Funciones auxiliares para escribir los tipos de datos especificos.
  * Se agrega a todas el parametro unsigned cantidad.
- ******************************************************************************/
+ *****************************************************************************/
 
-void write_njson(FILE* output, void* value, unsigned cantidad) {
-	//En este caso no se trata al valor como un array
-	//ya que la funcion itera sobre si misma, por lo cual
-	//no se suma el desplazamiento cantidad al puntero.
-	//El parametro se recibe por una cuestion de compatibilidad
-	//con la funcion generalizada.
+void write_njson(FILE* output, void* value) {
 	njson_write((nJson*) value, output);
 }
 
-void write_string(FILE* output, void* value, unsigned cantidad) {
-	//Igual que  la anterior, no se utiliza el desplamiento
-	//debido a que, la funcion, trata al valor como un string
-	//y no como una cadena de caracteres.
-	//El parametro se recibe por una cuestion de compatibilidad
-	//con la funcion generalizada.
+void write_string(FILE* output, void* value) {
 	fprintf(output, "\"%s\"", (char*) value);
 }
 
-void write_int(FILE* output, void* value, unsigned cantidad) {
-	fprintf(output, "%d", *((int*) value + cantidad));
+void write_int(FILE* output, void* value) {
+	fprintf(output, "%d", *((int*) value));
 }
 
-void write_boolean(FILE* output, void* value, unsigned cantidad) {
-	fprintf(output, "%s", (*((boolean*) value + cantidad)) ? "true" : "false");
+void write_boolean(FILE* output, void* value) {
+	fprintf(output, "%s", (*((boolean*) value)) ? "true" : "false");
 }
 
-void write_double(FILE* output, void* value, unsigned cantidad) {
-	fprintf(output, "%f", *((double*) value + cantidad));
+void write_double(FILE* output, void* value) {
+	fprintf(output, "%f", *((double*) value));
 }
 
-void write_float(FILE* output, void* value, unsigned cantidad) {
-	fprintf(output, "%f", *((float*) value + cantidad));
+void write_float(FILE* output, void* value) {
+	fprintf(output, "%f", *((float*) value));
 }
-
