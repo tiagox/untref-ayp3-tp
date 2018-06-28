@@ -33,11 +33,37 @@ nJson* njson_set_value(nJson* this, const char* name, void* value,
 	}
 	return this;
 }
-/*-----------------------------------------------
- * Realizo modificaciones:
- * comento la ejecucion de limpieza de memoria del final.
- * me borra los nombres de los Json internos(contents y photo_info).
- */
+
+nJson* njson_clone(nJson* this, nJson* target) {
+	njson_init(target);
+
+	if (this->name) {
+		target->name = (char*) malloc((strlen(this->name) + 1) * sizeof(char));
+		strcpy(target->name, this->name);
+	}
+
+	if (this->value_size) {
+		target->value_size = this->value_size;
+		target->value = malloc(target->value_size);
+		memcpy(target->value, this->value, target->value_size);
+	}
+
+	target->write = this->write;
+
+	target->is_array = this->is_array;
+
+	if (this->element_count) {
+		target->element_count = this->element_count;
+		target->elements = (nJson**) malloc(this->element_count * sizeof(nJson*));
+		for (int i = 0; i < target->element_count; ++i) {
+			target->elements[i] = (nJson*) malloc(sizeof(nJson));
+			njson_clone(this->elements[i], target->elements[i]);
+		}
+	}
+
+	return this;
+}
+
 nJson* njson_add_attr(nJson* this, nJson* attribute, unsigned attribute_size) {
 	if (this->children) {
 		nJson* current = this->children;
@@ -128,16 +154,10 @@ void njson_release(nJson* this) {
 	}
 }
 
-/* -------------------------------------------------------
- * Funciones necesarias para las consignas de la entrega 3
- * -------------------------------------------------------
- */
-
-err_code buscar_njson(nJson* this, nJson* buscado, nJson* encontrado) {
+nJson* buscar_njson(nJson* this, nJson* buscado, nJson* encontrado) {
 	if (this->children) {
 		nJson* current = this->children;
-		while (current->next != 0x0
-				&& (strcmp(current->next->name, buscado->name) != 0)) {
+		while (current->next != 0x0 && (strcmp(current->next->name, buscado->name) != 0)) {
 			if (this->children->children) {
 				buscar_njson(this->children, buscado, encontrado);
 			}
@@ -145,25 +165,21 @@ err_code buscar_njson(nJson* this, nJson* buscado, nJson* encontrado) {
 		}
 		encontrado = current->next;
 	}
-	return OK;
+	return this;
 }
 
-err_code eliminar_njson(nJson* this, nJson* a_modificar, char* name_atributo) {
-	nJson* encontrado = 0X0;
-	nJson* padre;
-	if (strcmp(this->name, a_modificar->name) != 0) {
-		encontrado = buscar_njson(this, a_modificar, encontrado);
+nJson* eliminar_njson(nJson* this, nJson* a_modificar, char* name_atributo) {
+	nJson* encontrado = this;
+	nJson* padre = 0x0;
 
-	} else {
-		encontrado = this;
+	if (strcmp(this->name, a_modificar->name) != 0) {
+		buscar_njson(this, a_modificar, encontrado);
 	}
 
 	if (encontrado->children) {
-
 		nJson* current = encontrado->children;
 
-		while (current->next != 0x0
-				&& (strcmp(current->name, name_atributo) != 0)) {
+		while (current->next != 0x0 && (strcmp(current->name, name_atributo) != 0)) {
 			padre = current;
 			current = current->next;
 		}
@@ -175,28 +191,25 @@ err_code eliminar_njson(nJson* this, nJson* a_modificar, char* name_atributo) {
 		current->next = padre->next->next;
 
 	}
-	return OK;
+	return this;
 }
 
-nJson* modificar_njson(nJson* this, nJson* a_modificar, char* name_atribute,
-		void* new_value, unsigned long_new_value) {
-
+nJson* modificar_njson(nJson* this, nJson* a_modificar, char* name_atribute, void* new_value, unsigned long_new_value) {
 	nJson* encontrado = this;
 
 	if (strcmp(this->name, a_modificar->name) != 0) {
-		encontrado = buscar_njson(this, a_modificar, encontrado);
+		buscar_njson(this, a_modificar, encontrado);
 	}
 
 	if (encontrado->children) {
 		nJson* current = encontrado->children;
-		while ((strcmp(current->name, name_atribute) != 0)
-				&& current->next != 0x0) {
+		while ((strcmp(current->name, name_atribute) != 0) && current->next != 0x0) {
 			current = current->next;
 		}
 
 		memcpy(current->value, new_value, long_new_value);
 	} else {
-		printf("�� No existe atributo \" %s \" !! \n", name_atribute);
+		printf("No existe atributo \" %s \" !! \n", name_atribute);
 	}
 
 	return this;

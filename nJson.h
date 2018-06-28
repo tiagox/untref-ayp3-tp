@@ -90,6 +90,14 @@ nJson* njson_set_value(nJson* this, const char* name, void* value,
 		unsigned value_size, unsigned elementos, writer write);
 
 /**
+ * Crea una copia de toda superficial del contenido del nodo nJson indicado en el nodo de destino.
+ * @param this nJson sobre el cual operará.
+ * @param target nJson en donde se realizará la copia del contenido de la origina.
+ * @return nJson* Puntero al nJson con el cual se operá.
+ */
+nJson* njson_clone(nJson* this, nJson* target);
+
+/**
  * Agrega un atributo al nJson especificado.
  * @param this nJson sobre el cual operará.
  * @param attribute nJson que será agregado como atributo en el nJson `this`.
