@@ -4,54 +4,46 @@
 
 #include "nJson.h"
 
-#define SUCCESS 0
-#define ERROR 1
+enum errors {
+	E_SUCCESS = 0, E_WRONG_ARGS, E_FILE_ACCESS
+};
 
 void print_help() {
 	printf("Generador de datos en formato JSON.\n\n");
-	printf("uso: untref-ayp3-tp [-c|-f <nombre_archivo>]\n\n");
+	printf("\n");
+	printf("uso: untref-ayp3-tp [-c|-f <nombre_archivo>]\n");
+	printf("\n");
+	printf("  -c                    muestra el JSON generado por la consola.\n");
+	printf("  -f <nombre_archivo>   escribe el JSON generado en el archivo <nombre_archivo>\n");
+	printf("\n");
 }
 
 int main(int argc, char **argv) {
 
 	FILE* output_file;
 
-	//nJson root;
-	//njson_init(&root);
-
 	// Primera entrega 2018-05-05
 	{
-		// Se leen los parametros provistos al programa.
-		if (argc > 1) {
-			if (strcmp(argv[1], "-f") == 0 && argc == 3
-					&& strlen(argv[2]) > 0) {
-				output_file = fopen(argv[2], "w");
-
-				if (!output_file) {
-					printf(
-							"Ocurrió un error al tratar de crear o acceder al archivo especificado.\n");
-					return ERROR;
-				}
-			} else {
-				if (strcmp(argv[1], "-c") == 0) {
-					output_file = stdout;
-				} else {
-					print_help();
-					return ERROR;
-				}
+		if (argc == 2 && strcmp(argv[1], "-c") == 0) {
+			output_file = stdout;
+		} else if (argc == 3 && strcmp(argv[1], "-f") == 0
+				&& strlen(argv[2]) > 0) {
+			output_file = fopen(argv[2], "w");
+			if (!output_file) {
+				fprintf(stderr, "Ocurrió un error al tratar de crear o acceder al archivo especificado.\n");
+				return E_FILE_ACCESS;
 			}
 		} else {
 			print_help();
-			return ERROR;
+			return E_WRONG_ARGS;
 		}
 	}
 
+	nJson root;
+	njson_init(&root);
+
 	// Segunda entrega 2018-05-19
 	{
-		nJson root;
-		njson_init(&root);
-
-		// Se definen los distintos nodos que formarán el JSON.
 		nJson size_attribute;
 		char* size_value = "0 bytes";
 		njson_init(&size_attribute);
@@ -160,10 +152,6 @@ int main(int argc, char **argv) {
 	}
 
 	// Tercera entrega 2018-06-09
-
-	// Se definen los distintos nodos que formarán el JSON.
-
-	///*-----------------nJson photo_info definicion ---------------------------*/
 	{
 		nJson contents_photo_info;
 		njson_init(&contents_photo_info);
@@ -374,6 +362,7 @@ int main(int argc, char **argv) {
 
 		njson_write(&root, output_file);
 
+#if 0
 		// Pruebas de función modificar_njson()
 		// Se cambiara el valor del atributo `"bytes":0` a `"bytes":32` en el nJson raiz
 		int valor = 32;
@@ -386,15 +375,17 @@ int main(int argc, char **argv) {
 		// Pruebas de funcion eliminar_njson()
 		// Se eliminara el valor del atributo "bytes" del nJson contents que esta dentro del Json raiz.
 		//eliminar_njson(&root, &contents, "bytes");
-
-		njson_write(&root, output_file);
-		njson_release(&root);
+#endif
 	}
+
+	njson_write(&root, output_file);
 
 	// Se asegura un último salto de línea en la escritura del archivo.
 	fprintf(output_file, "\n");
 
 	fclose(output_file);
 
-	return SUCCESS;
+	njson_release(&root);
+
+	return E_SUCCESS;
 }
