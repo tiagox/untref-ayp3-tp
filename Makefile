@@ -11,5 +11,5 @@ clean:
 	rm -rf *.o
 	rm -rf json_generator
 
-memory-check:
-	valgrind --leak-check=yes ./json_generator -c
+memchk:
+	valgrind --leak-check=full ./json_generator -c
