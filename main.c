@@ -44,323 +44,223 @@ int main(int argc, char **argv) {
 
 	// Segunda entrega 2018-05-19
 	{
-		nJson size_attribute;
+		nJson size_attr;
 		char* size_value = "0 bytes";
-		njson_init(&size_attribute);
-		njson_set_value(&size_attribute, "size", size_value,
-				strlen(size_value) + 1, 1, write_string);
+		njson_init(&size_attr);
+		njson_set_value(&size_attr, "size", size_value, strlen(size_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &size_attr);
+		njson_release(&size_attr);
 
-		nJson hash_attribute;
+		nJson hash_attr;
 		char* hash_value = "37eb1ba1849d4b0fb0b28caf7ef3af52";
-		njson_init(&hash_attribute);
-		njson_set_value(&hash_attribute, "hash", hash_value,
-				strlen(hash_value) + 1, 1, write_string);
+		njson_init(&hash_attr);
+		njson_set_value(&hash_attr, "hash", hash_value, strlen(hash_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &hash_attr);
+		njson_release(&hash_attr);
 
-		nJson bytes_attribute;
+		nJson bytes_attr;
 		int bytes_value = 0;
-		njson_init(&bytes_attribute);
-		njson_set_value(&bytes_attribute, "bytes", &bytes_value, sizeof(int), 1,
-				&write_int);
+		njson_init(&bytes_attr);
+		njson_set_value(&bytes_attr, "bytes", &bytes_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&root, &bytes_attr);
+		njson_release(&bytes_attr);
 
-		nJson thumb_exists_attribute;
+		nJson thumb_exists_attr;
 		boolean thumb_exists_value = FALSE;
-		njson_init(&thumb_exists_attribute);
-		njson_set_value(&thumb_exists_attribute, "thumb_exists",
-				&thumb_exists_value, sizeof(boolean), 1, &write_boolean);
-
-		nJson rev_attribute;
-		char* rev_value = "714f029684fe";
-		njson_init(&rev_attribute);
-		njson_set_value(&rev_attribute, "rev", rev_value, strlen(rev_value) + 1,
-				1, &write_string);
-
-		nJson modified_attribute;
-		char* modified_value = "Wed, 27 Apr 2011 22:18:51 +0000";
-		njson_init(&modified_attribute);
-		njson_set_value(&modified_attribute, "rev", modified_value,
-				strlen(modified_value) + 1, 1, &write_string);
-
-		nJson path_attribute;
-		char* path_value = "/Photos";
-		njson_init(&path_attribute);
-		njson_set_value(&path_attribute, "path", path_value,
-				strlen(path_value) + 1, 1, &write_string);
-
-		nJson is_dir_attribute;
-		boolean is_dir_value = TRUE;
-		njson_init(&is_dir_attribute);
-		njson_set_value(&is_dir_attribute, "is_dir", &is_dir_value,
-				sizeof(boolean), 1, &write_boolean);
-
-		nJson icon_attribute;
-		char* icon_value = "folder";
-		njson_init(&icon_attribute);
-		njson_set_value(&icon_attribute, "icon", icon_value,
-				strlen(icon_value) + 1, 1, &write_string);
-
-		nJson root_attribute;
-		char* root_value = "dropbox";
-		njson_init(&root_attribute);
-		njson_set_value(&root_attribute, "root", root_value,
-				strlen(root_value) + 1, 1, &write_string);
-
-		nJson revision_attribute;
-		int revision_value = 29007;
-		njson_init(&revision_attribute);
-		njson_set_value(&revision_attribute, "revision", &revision_value,
-				sizeof(int), 1, &write_int);
-
-		nJson coordinates_lat_attribute;
-		double coordinates_lat_value = 37.77256666666666;
-		njson_init(&coordinates_lat_attribute);
-		njson_set_value(&coordinates_lat_attribute, "lat",
-				&coordinates_lat_value, sizeof(double), 1, &write_double);
-
-		nJson coordinates_long_attribute;
-		double coordinates_long_value = -122.45934166666667;
-		njson_init(&coordinates_long_attribute);
-		njson_set_value(&coordinates_long_attribute, "long",
-				&coordinates_long_value, sizeof(double), 1, &write_double);
-
-		nJson coordinates_object;
-		njson_init(&coordinates_object);
-		njson_add_attr(&coordinates_object, &coordinates_lat_attribute,
-				sizeof(coordinates_lat_attribute));
-		njson_add_attr(&coordinates_object, &coordinates_long_attribute,
-				sizeof(coordinates_long_attribute));
-
-		nJson coordinate_attribute;
-		njson_init(&coordinate_attribute);
-		njson_set_value(&coordinate_attribute, "coordinate",
-				&coordinates_object, sizeof(coordinates_object), 1,
-				&write_njson);
-
-		// Se combinan los diferentes nodos sobre el nodo raiz.
-		njson_add_attr(&root, &size_attribute, sizeof(size_attribute));
-		njson_add_attr(&root, &hash_attribute, sizeof(hash_attribute));
-		njson_add_attr(&root, &bytes_attribute, sizeof(bytes_attribute));
-		njson_add_attr(&root, &thumb_exists_attribute, sizeof(bytes_attribute));
-		njson_add_attr(&root, &rev_attribute, sizeof(rev_attribute));
-		njson_add_attr(&root, &modified_attribute, sizeof(modified_attribute));
-		njson_add_attr(&root, &path_attribute, sizeof(path_attribute));
-		njson_add_attr(&root, &is_dir_attribute, sizeof(is_dir_attribute));
-		njson_add_attr(&root, &coordinate_attribute,
-				sizeof(coordinate_attribute));
-		njson_add_attr(&root, &icon_attribute, sizeof(icon_attribute));
-		njson_add_attr(&root, &root_attribute, sizeof(root_attribute));
-		njson_add_attr(&root, &revision_attribute, sizeof(revision_attribute));
-	}
-
-	// Tercera entrega 2018-06-09
-	{
-		nJson contents_photo_info;
-		njson_init(&contents_photo_info);
-		njson_set_value(&contents_photo_info, "photo_info", 0x0, 0, 1,
-				&write_njson);
-
-		nJson photo_info_lat_long_attribute;
-		double photo_info_lat_long_value[2] = { 37.77256666666666,
-				-122.45934166666667 };
-		njson_init(&photo_info_lat_long_attribute);
-		njson_set_value(&photo_info_lat_long_attribute, "lat_long",
-				&photo_info_lat_long_value, sizeof(photo_info_lat_long_value),
-				2, &write_double);
-
-		njson_add_attr(&contents_photo_info, &photo_info_lat_long_attribute,
-				sizeof(photo_info_lat_long_attribute));
-
-		char* photo_info_time_taken_value = "Wed, 28 Aug 2013 18:12:02 +0000";
-		nJson photo_info_time_taken_attr;
-		njson_init(&photo_info_time_taken_attr);
-		njson_set_value(&photo_info_time_taken_attr, "time_taken",
-				photo_info_time_taken_value,
-				strlen(photo_info_time_taken_value) + 1, 1, &write_string);
-
-		njson_add_attr(&contents_photo_info, &photo_info_time_taken_attr,
-				sizeof(photo_info_time_taken_attr));
-
-		/* nJson contents definicion */
-		nJson contents;
-		njson_init(&contents);
-
-		// El quinto parametro de un nJson Padre es mayor que 1 solo a los
-		// efectos de considerarlo un array.
-		njson_set_value(&contents, "contents", 0x0, 0, 2, &write_njson);
-
-		nJson contents_size_attribute;
-		char* contents_size_value = "2.3 MB";
-
-		njson_init(&contents_size_attribute);
-		njson_set_value(&contents_size_attribute, "size", contents_size_value,
-				strlen(contents_size_value) + 1, 1, write_string);
-
-		nJson contents_bytes_attribute;
-		int contents_bytes_value = 2453963;
-		njson_init(&contents_bytes_attribute);
-		njson_set_value(&contents_bytes_attribute, "bytes",
-				&contents_bytes_value, sizeof(int), 1, &write_int);
-
-		nJson contents_thumb_exists_attribute;
-		boolean contents_thumb_exists_value = TRUE;
-		njson_init(&contents_thumb_exists_attribute);
-		njson_set_value(&contents_thumb_exists_attribute, "thumb_exists",
-				&contents_thumb_exists_value, sizeof(boolean), 1,
+		njson_init(&thumb_exists_attr);
+		njson_set_value(&thumb_exists_attr, "thumb_exists", &thumb_exists_value, sizeof(boolean), FALSE,
 				&write_boolean);
+		njson_add_element(&root, &thumb_exists_attr);
+		njson_release(&thumb_exists_attr);
 
-		nJson contents_rev_attribute;
-		char* contents_rev_value = "38af1b183490";
-		njson_init(&contents_rev_attribute);
-		njson_set_value(&contents_rev_attribute, "rev", contents_rev_value,
-				strlen(contents_rev_value) + 1, 1, &write_string);
-
-		nJson contents_modified_attribute;
-		char* contents_modified_value = "Mon, 07 Apr 2014 23:13:16 +0000";
-		njson_init(&contents_modified_attribute);
-		njson_set_value(&contents_modified_attribute, "modified",
-				contents_modified_value, strlen(contents_modified_value) + 1, 1,
-				&write_string);
-
-		nJson contents_path_attribute;
-		char* contents_path_value = "/Photos/flower.jpg";
-		njson_init(&contents_path_attribute);
-		njson_set_value(&contents_path_attribute, "path", contents_path_value,
-				strlen(contents_path_value) + 1, 1, &write_string);
-
-		nJson contents_is_dir_attribute;
-		boolean contents_is_dir_value = FALSE;
-		njson_init(&contents_is_dir_attribute);
-		njson_set_value(&contents_is_dir_attribute, "is_dir",
-				&contents_is_dir_value, sizeof(boolean), 1, &write_boolean);
-
-		nJson contents_icon_attribute;
-		char* contents_icon_value = "page_white_picture";
-		njson_init(&contents_icon_attribute);
-		njson_set_value(&contents_icon_attribute, "icon", contents_icon_value,
-				strlen(contents_icon_value) + 1, 1, &write_string);
-
-		nJson contents_root_attribute;
-		char* contents_root_value = "dropbox";
-		njson_init(&contents_root_attribute);
-		njson_set_value(&contents_root_attribute, "root", contents_root_value,
-				strlen(contents_root_value) + 1, 1, &write_string);
-
-		nJson contents_revision_attribute;
-		int contents_revision_value = 14511;
-		njson_init(&contents_revision_attribute);
-		njson_set_value(&contents_revision_attribute, "revision",
-				&contents_revision_value, sizeof(int), 1, &write_int);
-
-		// Se combinan los diferentes nodos sobre el nodo nJson contents.
-		njson_add_attr(&contents, &contents_size_attribute,
-				sizeof(contents_size_attribute));
-		//njson_add_attribute(&contents, &contents_hash_attribute, sizeof(contents_hash_attribute));
-		njson_add_attr(&contents, &contents_bytes_attribute,
-				sizeof(contents_bytes_attribute));
-		njson_add_attr(&contents, &contents_thumb_exists_attribute,
-				sizeof(contents_bytes_attribute));
-		njson_add_attr(&contents, &contents_rev_attribute,
-				sizeof(contents_rev_attribute));
-		njson_add_attr(&contents, &contents_modified_attribute,
-				sizeof(contents_modified_attribute));
-		njson_add_attr(&contents, &contents_path_attribute,
-				sizeof(contents_path_attribute));
-		njson_add_attr(&contents, &contents_photo_info,
-				sizeof(contents_photo_info));
-		njson_add_attr(&contents, &contents_is_dir_attribute,
-				sizeof(contents_is_dir_attribute));
-		njson_add_attr(&contents, &contents_icon_attribute,
-				sizeof(contents_icon_attribute));
-		njson_add_attr(&contents, &contents_root_attribute,
-				sizeof(contents_root_attribute));
-		njson_add_attr(&contents, &contents_revision_attribute,
-				sizeof(contents_revision_attribute));
-
-		/*-----------------nJson root definicion ---------------------------*/
-		nJson root;
-		njson_init(&root);
-		njson_set_value(&root, "raiz", 0x0, 0, 2, &write_njson);
-
-		nJson size_attribute;
-		char* size_value = "0 bytes";
-		njson_init(&size_attribute);
-		njson_set_value(&size_attribute, "size", size_value,
-				strlen(size_value) + 1, 1, write_string);
-
-		nJson hash_attribute;
-		char* hash_value = "37eb1ba1849d4b0fb0b28caf7ef3af52";
-		njson_init(&hash_attribute);
-		njson_set_value(&hash_attribute, "hash", hash_value,
-				strlen(hash_value) + 1, 1, write_string);
-
-		nJson bytes_attribute;
-		int bytes_value = 0;
-		njson_init(&bytes_attribute);
-		njson_set_value(&bytes_attribute, "bytes", &bytes_value, sizeof(int), 1,
-				&write_int);
-
-		nJson thumb_exists_attribute;
-		boolean thumb_exists_value = FALSE;
-		njson_init(&thumb_exists_attribute);
-		njson_set_value(&thumb_exists_attribute, "thumb_exists",
-				&thumb_exists_value, sizeof(boolean), 1, &write_boolean);
-
-		nJson rev_attribute;
+		nJson rev_attr;
 		char* rev_value = "714f029684fe";
-		njson_init(&rev_attribute);
-		njson_set_value(&rev_attribute, "rev", rev_value, strlen(rev_value) + 1,
-				1, &write_string);
+		njson_init(&rev_attr);
+		njson_set_value(&rev_attr, "rev", rev_value, strlen(rev_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &rev_attr);
+		njson_release(&rev_attr);
 
-		nJson modified_attribute;
+		nJson modified_attr;
 		char* modified_value = "Wed, 27 Apr 2011 22:18:51 +0000";
-		njson_init(&modified_attribute);
-		njson_set_value(&modified_attribute, "modified", modified_value,
-				strlen(modified_value) + 1, 1, &write_string);
+		njson_init(&modified_attr);
+		njson_set_value(&modified_attr, "modified", modified_value, strlen(modified_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &modified_attr);
+		njson_release(&modified_attr);
 
-		nJson path_attribute;
+		nJson path_attr;
 		char* path_value = "/Photos";
-		njson_init(&path_attribute);
-		njson_set_value(&path_attribute, "path", path_value,
-				strlen(path_value) + 1, 1, &write_string);
+		njson_init(&path_attr);
+		njson_set_value(&path_attr, "path", path_value, strlen(path_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &path_attr);
+		njson_release(&path_attr);
 
-		nJson is_dir_attribute;
+		nJson is_dir_attr;
 		boolean is_dir_value = TRUE;
-		njson_init(&is_dir_attribute);
-		njson_set_value(&is_dir_attribute, "is_dir", &is_dir_value,
-				sizeof(boolean), 1, &write_boolean);
+		njson_init(&is_dir_attr);
+		njson_set_value(&is_dir_attr, "is_dir", &is_dir_value, sizeof(boolean), FALSE, &write_boolean);
+		njson_add_element(&root, &is_dir_attr);
+		njson_release(&is_dir_attr);
 
 		nJson icon_attr;
 		char* icon_value = "folder";
 		njson_init(&icon_attr);
-		njson_set_value(&icon_attr, "icon", icon_value, strlen(icon_value) + 1,
-				1, &write_string);
+		njson_set_value(&icon_attr, "icon", icon_value, strlen(icon_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &icon_attr);
+		njson_release(&icon_attr);
 
 		nJson root_attr;
 		char* root_value = "dropbox";
 		njson_init(&root_attr);
-		njson_set_value(&root_attr, "root", root_value, strlen(root_value) + 1,
-				1, &write_string);
+		njson_set_value(&root_attr, "root", root_value, strlen(root_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &root_attr);
+		njson_release(&root_attr);
 
-		nJson revision_attribute;
+		nJson revision_attr;
 		int revision_value = 29007;
-		njson_init(&revision_attribute);
-		njson_set_value(&revision_attribute, "revision", &revision_value,
-				sizeof(int), 1, &write_int);
+		njson_init(&revision_attr);
+		njson_set_value(&revision_attr, "revision", &revision_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&root, &revision_attr);
+		njson_release(&revision_attr);
+	}
 
-		// Se combinan los diferentes nodos sobre el nodo raiz.
-		njson_add_attr(&root, &size_attribute, sizeof(size_attribute));
-		njson_add_attr(&root, &hash_attribute, sizeof(hash_attribute));
-		njson_add_attr(&root, &bytes_attribute, sizeof(bytes_attribute));
-		njson_add_attr(&root, &thumb_exists_attribute, sizeof(bytes_attribute));
-		njson_add_attr(&root, &rev_attribute, sizeof(rev_attribute));
-		njson_add_attr(&root, &modified_attribute, sizeof(modified_attribute));
-		njson_add_attr(&root, &path_attribute, sizeof(path_attribute));
-		njson_add_attr(&root, &is_dir_attribute, sizeof(is_dir_attribute));
-		njson_add_attr(&root, &icon_attr, sizeof(icon_attr));
-		njson_add_attr(&root, &root_attr, sizeof(root_attr));
-		njson_add_attr(&root, &contents, sizeof(nJson));
-		njson_add_attr(&root, &revision_attribute, sizeof(revision_attribute));
+	// Tercera entrega 2018-06-09
+	{
+		nJson contents_array;
+		njson_init(&contents_array);
+		njson_set_value(&contents_array, "contents", 0x0, 0, TRUE, &write_njson);
 
-		njson_write(&root, output_file);
+		nJson contents_array_0;
+		njson_init(&contents_array_0);
+		njson_set_value(&contents_array_0, 0x0, 0x0, 0, FALSE, &write_njson);
+
+		nJson size_attr;
+		char* size_value = "2.3 MB";
+		njson_init(&size_attr);
+		njson_set_value(&size_attr, "size", size_value, strlen(size_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &size_attr);
+		njson_release(&size_attr);
+
+		nJson rev_attr;
+		char* rev_value = "38af1b183490";
+		njson_init(&rev_attr);
+		njson_set_value(&rev_attr, "revision", rev_value, strlen(rev_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &rev_attr);
+		njson_release(&rev_attr);
+
+		nJson thumb_exists_attr;
+		boolean thumb_exists_value = TRUE;
+		njson_init(&thumb_exists_attr);
+		njson_set_value(&thumb_exists_attr, "thumb_exists", &thumb_exists_value, sizeof(boolean), FALSE,
+				&write_boolean);
+		njson_add_element(&contents_array_0, &thumb_exists_attr);
+		njson_release(&thumb_exists_attr);
+
+		nJson bytes_attr;
+		int bytes_value = 2453963;
+		njson_init(&bytes_attr);
+		njson_set_value(&bytes_attr, "bytes", &bytes_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&contents_array_0, &bytes_attr);
+		njson_release(&bytes_attr);
+
+		nJson modified_attr;
+		char* modified_value = "Mon, 07 Apr 2014 23:13:16 +0000";
+		njson_init(&modified_attr);
+		njson_set_value(&modified_attr, "modified", modified_value, strlen(modified_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &modified_attr);
+		njson_release(&modified_attr);
+
+		nJson client_mtime_attr;
+		char* client_mtime_value = "Thu, 29 Aug 2013 01:12:02 +0000";
+		njson_init(&client_mtime_attr);
+		njson_set_value(&client_mtime_attr, "client_mtime", client_mtime_value, strlen(client_mtime_value) + 1, FALSE,
+				&write_string);
+		njson_add_element(&contents_array_0, &client_mtime_attr);
+		njson_release(&client_mtime_attr);
+
+		nJson path_attr;
+		char* path_value = "/Photos/flower.jpg";
+		njson_init(&path_attr);
+		njson_set_value(&path_attr, "path", path_value, strlen(path_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &path_attr);
+		njson_release(&path_attr);
+
+		nJson photo_info_attr;
+		njson_init(&photo_info_attr);
+		njson_set_value(&photo_info_attr, "photo_info", 0x0, 0, FALSE, &write_njson);
+
+		nJson lat_long_array;
+		njson_init(&lat_long_array);
+		njson_set_value(&lat_long_array, "lat_long", 0x0, 0, TRUE, &write_njson);
+
+		nJson lat_long_array_0;
+		double lat_long_array_0_value = 37.77256666666666;
+		njson_init(&lat_long_array_0);
+		njson_set_value(&lat_long_array_0, 0x0, &lat_long_array_0_value, sizeof(double), FALSE, &write_double);
+		njson_add_element(&lat_long_array, &lat_long_array_0);
+		njson_release(&lat_long_array_0);
+
+		nJson lat_long_array_1;
+		double lat_long_array_1_value = -122.45934166666667;
+		njson_init(&lat_long_array_1);
+		njson_set_value(&lat_long_array_1, 0x0, &lat_long_array_1_value, sizeof(double), FALSE, &write_double);
+		njson_add_element(&lat_long_array, &lat_long_array_1);
+		njson_release(&lat_long_array_1);
+
+		njson_add_element(&photo_info_attr, &lat_long_array);
+		njson_release(&lat_long_array);
+
+		nJson time_taken_attr;
+		char* time_taken_value = "Wed, 28 Aug 2013 18:12:02 +0000";
+		njson_init(&time_taken_attr);
+		njson_set_value(&time_taken_attr, "time_taken", time_taken_value, strlen(time_taken_value) + 1, FALSE,
+				&write_string);
+		njson_add_element(&photo_info_attr, &time_taken_attr);
+		njson_release(&time_taken_attr);
+
+		njson_add_element(&contents_array_0, &photo_info_attr);
+		njson_release(&photo_info_attr);
+
+		nJson is_dir_attr;
+		boolean is_dir_value = FALSE;
+		njson_init(&is_dir_attr);
+		njson_set_value(&is_dir_attr, "is_dir", &is_dir_value, sizeof(boolean), FALSE, &write_boolean);
+		njson_add_element(&contents_array_0, &is_dir_attr);
+		njson_release(&is_dir_attr);
+
+		nJson icon_attr;
+		char* icon_value = "page_white_picture";
+		njson_init(&icon_attr);
+		njson_set_value(&icon_attr, "icon", icon_value, strlen(icon_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &icon_attr);
+		njson_release(&icon_attr);
+
+		nJson root_attr;
+		char* root_value = "dropbox";
+		njson_init(&root_attr);
+		njson_set_value(&root_attr, "root", root_value, strlen(root_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &root_attr);
+		njson_release(&root_attr);
+
+		nJson mime_type_attr;
+		char* mime_type_value = "image/jpeg";
+		njson_init(&mime_type_attr);
+		njson_set_value(&mime_type_attr, "mime_type", mime_type_value, strlen(mime_type_value) + 1, FALSE,
+				&write_string);
+		njson_add_element(&contents_array_0, &mime_type_attr);
+		njson_release(&mime_type_attr);
+
+		nJson contents_revision_attr;
+		int contents_revision_value = 14511;
+		njson_init(&contents_revision_attr);
+		njson_set_value(&contents_revision_attr, "revision", &contents_revision_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&contents_array_0, &contents_revision_attr);
+		njson_release(&contents_revision_attr);
+
+		njson_add_element(&contents_array, &contents_array_0);
+		njson_release(&contents_array_0);
+
+		njson_add_element(&root, &contents_array);
+		njson_release(&contents_array);
 
 #if 0
 		// Pruebas de función modificar_njson()
@@ -376,6 +276,13 @@ int main(int argc, char **argv) {
 		// Se eliminara el valor del atributo "bytes" del nJson contents que esta dentro del Json raiz.
 		//eliminar_njson(&root, &contents, "bytes");
 #endif
+
+		nJson revision_attr;
+		int revision_value = 29007;
+		njson_init(&revision_attr);
+		njson_set_value(&revision_attr, "revision", &revision_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&root, &revision_attr);
+		njson_release(&revision_attr);
 	}
 
 	njson_write(&root, output_file);
