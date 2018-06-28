@@ -14,24 +14,43 @@ nJson* njson_init(nJson* this) {
 	return this;
 }
 
-nJson* njson_set_value(nJson* this, const char* name, void* value,
-		unsigned value_size, unsigned elementos, writer write) {
-	this->name = (char*) malloc((strlen(name) + 1) * sizeof(char));
-	strcpy(this->name, name);
+err_code njson_set_value(nJson* this, const char* name, void* value, unsigned value_size, boolean is_array,
+		writer write) {
+	if (value_size && is_array) {
+		return E_INVALID_ARGS_COMBINATION;
+	}
 
-	this->value = malloc(value_size);
-	memcpy(this->value, value, value_size);
+	if (name) {
+		this->name = (char*) realloc(this->name, (strlen(name) + 1) * sizeof(char));
+		strcpy(this->name, name);
+	}
 
-	this->value_size = value_size;
-
-	this->cant_elementos = elementos;
+	if (value_size) {
+		this->value_size = value_size;
+		this->value = realloc(this->value, this->value_size);
+		memcpy(this->value, value, this->value_size);
+	}
 
 	this->write = write;
 
-	if (this->children) {
-		njson_release(this->children);
+	this->is_array = is_array;
+
+	// Si el nodo tiene valor, significa que representa un atributo (clave:valor) y que no puede contener elementos.
+	if (this->element_count) {
+		for (int i = 0; i < this->element_count; ++i) {
+			njson_release(this->elements[i]);
+
+			free(this->elements[i]);
+			this->elements[i] = 0x0;
+		}
+
+		free(this->elements);
+		this->elements = 0x0;
+
+		this->element_count = 0;
 	}
-	return this;
+
+	return E_OK;
 }
 
 nJson* njson_clone(nJson* this, nJson* target) {

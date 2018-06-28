@@ -84,10 +84,10 @@ nJson* njson_init(nJson* this);
  * @param value Puntero al data que debe ser almacenado como valor del nJson.
  * @param value_size Tamaño en memoria del valor que se almacenará en el nJson.
  * @param size Tamaño en memoria del nJson `child`
- * @return nJson* Puntero al nJson con el cual se operá.
+ * @return err_code Puntero al nJson con el cual se operá.
  */
-nJson* njson_set_value(nJson* this, const char* name, void* value,
-		unsigned value_size, unsigned elementos, writer write);
+err_code njson_set_value(nJson* this, const char* name, void* value, unsigned value_size, boolean is_array,
+		writer write);
 
 /**
  * Crea una copia de toda superficial del contenido del nodo nJson indicado en el nodo de destino.
