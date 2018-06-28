@@ -103,46 +103,21 @@ nJson* njson_add_element(nJson* this, nJson* attr) {
 }
 
 nJson* njson_write(nJson* this, FILE* output) {
-	int i;
-
 	if (this->name) {
 		fprintf(output, "\"%s\":", this->name);
 	}
 
-	if (this->value_size) {
-		//Si cant_elementos es mayor a 1 es un array
-		if (this->cant_elementos > 1) {
-			fprintf(output, "[");
-		}
-		//Trata a todos valores como un arrays, de un elemento hasta la cant_elemmentos
-		for (i = 0; i < this->cant_elementos; i = i + 1) {
-			this->write(output, this->value, i);
-			// Imprime "," que se imprimia en el ultimo if
-			// fprintf(output, ",");
-		}
-		if (this->cant_elementos > 1) {
-			fprintf(output, "]");
-		}
+	if (this->value) {
+		this->write(output, this->value, 0);
 	}
 
-	if (this->children) {
-		//agrega corchetes a los array de nJson
-		if (this->cant_elementos > 1) {
-			fprintf(output, "[");
+	if (this->element_count) {
+		fprintf(output, this->is_array ? "[" : "{");
+		for (int i = 0; i < this->element_count; ++i) {
+			fprintf(output, i > 0 ? "," : "");
+			njson_write(this->elements[i], output);
 		}
-
-		fprintf(output, "{");
-		njson_write(this->children, output);
-		fprintf(output, "}");
-
-		if (this->cant_elementos > 1) {
-			fprintf(output, "]");
-		}
-	}
-
-	if (this->next) {
-		fprintf(output, ",");
-		njson_write(this->next, output);
+		fprintf(output, this->is_array ? "]" : "}");
 	}
 
 	return this;
