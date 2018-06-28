@@ -6,22 +6,23 @@
 #define _NJSON_H_
 
 /**
- * Defino un nuevo tipo de dato enumerado que represente los valores booleanos
- * de `true` y `false`
+ * Defino un nuevo tipo de dato enumerado que represente los valores booleanos `true` y `false`.
  * @type boolean
  */
 typedef enum _boolean {
-	FALSE, TRUE
+	FALSE = 0, TRUE
 } boolean;
 
+/**
+ * Dato enumerado para devolver los códigos de errores posibles en el uso del TDA nJson.
+ */
 typedef enum _err_code {
-	OK = 0
+	E_OK = 0, E_INVALID_ARGS_COMBINATION
 } err_code;
 
 /**
- * Defino un nuevo tipo de dato puntero a función para representar el prototipo
- * de las funciones de escritura especificos para cada tipo de dato contenido en
- * un nJson.
+ * Defino un nuevo tipo de dato puntero a función para representar el prototipo de las funciones de escritura
+ * especificos para cada tipo de dato contenido en un nJson.
  * @type writer
  */
 typedef void (*writer)(FILE*, void*, unsigned);
@@ -43,22 +44,28 @@ typedef struct _nJson {
 	 * Tamaño en bytes del valor almacenado en el nodo.
 	 */
 	unsigned value_size;
+	/**
+	 * Flag para indicar si los elementos son elementos de una array o atributos.
+	 */
+	boolean is_array;
 	/*
 	 * Cantidad de elementos del valor, utilizado para el manejo de arrays.
 	 */
-	unsigned cant_elementos;
+	unsigned element_count;
 	/**
-	 * Puntero a la lista de atributos dentro del nodo. Solo hijos directos.
+	 * Array de elementos contenidos en el nodo. Pueden ser elementos de una array o atributos del nodo JSON.
+	 */
+	struct _nJson** elements;
+	/**
+	 * @deprecated
 	 */
 	struct _nJson* children;
 	/**
-	 * Puntero a al siguiente nodo hermano, cuando los nodos son atributos de un
-	 * nodo padre.
+	 * @deprecated
 	 */
 	struct _nJson* next;
 	/**
-	 * Función para escribir el tipo de dato especifico guardado como valor del
-	 * nodo.
+	 * Función para escribir el tipo de dato especifico guardado como valor del nodo.
 	 */
 	writer write;
 } nJson;
@@ -92,16 +99,14 @@ nJson* njson_set_value(nJson* this, const char* name, void* value,
 nJson* njson_add_attr(nJson* this, nJson* attribute, unsigned attribute_size);
 
 /**
- * Escribe el texto que representa al nJson en el descriptor de archivo provisto
- * a la función.
+ * Escribe el texto que representa al nJson en el descriptor de archivo provisto a la función.
  * @param this nJson sobre el cual operará.
  * @return nJson* Puntero al nJson con el cual se operá.
  */
 nJson* njson_write(nJson* this, FILE* output);
 
 /**
- * Primitiva para liberar la memoria allocada para cada uno de los nodos de la
- * estructura de nJson recursivamente.
+ * Primitiva para liberar la memoria allocada para cada uno de los nodos de la estructura de nJson recursivamente.
  * @param this nJson sobre el cual operará.
  */
 void njson_release(nJson* this);
@@ -147,7 +152,7 @@ void write_double(FILE* output, void* value, unsigned cantidad);
  * @param. nJson para devolver el resultado.
  * @return.  retorna un puntero al nJson encontrado.
  */
-err_code buscar_njson(nJson*, nJson*, nJson*);
+nJson* buscar_njson(nJson*, nJson*, nJson*);
 
 /*
  * Funcion para modificar alguun valor de un nJson
@@ -158,7 +163,7 @@ err_code buscar_njson(nJson*, nJson*, nJson*);
  * @param. longitud del valor nuevo.
  * @return: retorna nJson raiz modificado.
  */
-err_code modificar_njson(nJson*, nJson*, char*, void*, unsigned);
+nJson* modificar_njson(nJson*, nJson*, char*, void*, unsigned);
 
 /*
  * Funcion utilizadapara elimiinar un nJson.

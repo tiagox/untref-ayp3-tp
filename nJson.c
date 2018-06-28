@@ -2,12 +2,15 @@
 
 nJson* njson_init(nJson* this) {
 	this->name = 0x0;
+	this->value_size = 0;
 	this->value = 0x0;
-	this->value_size = 0x0;
-	this->cant_elementos = 0x0;  //Miembro nuevo, necesariio para tratar arrays.
-	this->children = 0x0;
-	this->next = 0x0;
+	this->is_array = FALSE;
+	this->element_count = 0;
+	this->elements = 0x0;
+	this->children = 0x0; // deprecated
+	this->next = 0x0; // deprecated
 	this->write = 0x0;
+
 	return this;
 }
 
