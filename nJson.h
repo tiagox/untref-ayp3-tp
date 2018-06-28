@@ -104,7 +104,7 @@ nJson* njson_clone(nJson* this, nJson* target);
  * @param attribute_size Tamaño en memoria del nJson `child`
  * @return nJson* Puntero al nJson con el cual se operá.
  */
-nJson* njson_add_attr(nJson* this, nJson* attribute, unsigned attribute_size);
+nJson* njson_add_element(nJson* this, nJson* attribute);
 
 /**
  * Escribe el texto que representa al nJson en el descriptor de archivo provisto a la función.

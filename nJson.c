@@ -83,26 +83,22 @@ nJson* njson_clone(nJson* this, nJson* target) {
 	return this;
 }
 
-nJson* njson_add_attr(nJson* this, nJson* attribute, unsigned attribute_size) {
-	if (this->children) {
-		nJson* current = this->children;
-		while (current->next != 0x0) {
-			current = current->next;
-		}
-		current->next = (nJson*) malloc(attribute_size);
-		memcpy(current->next, attribute, attribute_size);
-	} else {
-		this->children = (nJson*) malloc(attribute_size);
-		memcpy(this->children, attribute, attribute_size);
+nJson* njson_add_element(nJson* this, nJson* attr) {
+	nJson new_attr;
+	njson_clone(attr, &new_attr);
+
+	this->element_count += 1;
+	this->elements = (nJson**) realloc(this->elements, this->element_count * sizeof(nJson*));
+	this->elements[this->element_count - 1] = (nJson*) malloc(sizeof(new_attr));
+	memcpy(this->elements[this->element_count - 1], &new_attr, sizeof(new_attr));
+
+	// Si se agregan elementos, este nodo no podrá tener un valor asignado.
+	if (this->value) {
+		free(this->value);
+		this->value = 0x0;
+		this->value_size = 0x0;
 	}
-	//this->cant_elementos++;
-	/*
-	 free(this->name);
-	 this->name = 0x0;
-	 free(this->value);
-	 this->value = 0x0;
-	 this->value_size = 0x0;
-	 */
+
 	return this;
 }
 
