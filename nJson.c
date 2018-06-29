@@ -100,6 +100,97 @@ nJson* njson_add_element(nJson* this, nJson* attr) {
 	return this;
 }
 
+err_code njson_remove_element(nJson* this, const char* name) {
+	if (this->is_array) {
+		return E_OPERATION_NOT_ALLOWED;
+	}
+
+	boolean found = FALSE;
+
+	for (int i = 0; i < this->element_count; ++i) {
+		if (strcmp(this->elements[i]->name, name) == 0) {
+			found = TRUE;
+			njson_release(this->elements[i]);
+			free(this->elements[i]);
+		}
+
+		if (found && i < this->element_count - 1) {
+			this->elements[i] = this->elements[i + 1];
+		}
+	}
+
+	if (found) {
+		this->element_count -= 1;
+		this->elements = (nJson**) realloc(this->elements, this->element_count * sizeof(nJson*));
+	}
+
+	return found ? E_OK : E_ELEMENT_NOT_FOUND;
+}
+
+err_code njson_get_element(nJson* this, const char* name, nJson** element) {
+	if (this->is_array) {
+		return E_OPERATION_NOT_ALLOWED;
+	}
+
+	for (int i = 0; i < this->element_count; ++i) {
+		if (strcmp(this->elements[i]->name, name) == 0) {
+			*element = this->elements[i];
+			return E_OK;
+		}
+	}
+
+	return E_ELEMENT_NOT_FOUND;
+}
+
+err_code njson_get_array_element(nJson* this, unsigned index, nJson** element) {
+	if (!this->is_array) {
+		return E_OPERATION_NOT_ALLOWED;
+	}
+
+	if (index < this->element_count) {
+		*element = this->elements[index];
+		return E_OK;
+	}
+
+	return E_INDEX_OUT_OF_BOUND;
+}
+
+err_code njson_update_element(nJson* this, const char* name, nJson* attr) {
+	if (this->is_array) {
+		return E_OPERATION_NOT_ALLOWED;
+	}
+
+	for (int i = 0; i < this->element_count; ++i) {
+		if (strcmp(this->elements[i]->name, name) == 0) {
+			nJson new_attr;
+			njson_clone(attr, &new_attr);
+			njson_release(this->elements[i]);
+			memcpy(this->elements[i], &new_attr, sizeof(new_attr));
+			return E_OK;
+		}
+	}
+
+	return E_ELEMENT_NOT_FOUND;
+}
+
+err_code njson_update_array_element(nJson* this, unsigned index, nJson* attr) {
+	if (!this->is_array) {
+		return E_OPERATION_NOT_ALLOWED;
+	}
+
+	if (index < this->element_count) {
+		nJson new_attr;
+		njson_clone(attr, &new_attr);
+		njson_release(this->elements[index]);
+		free(this->elements[index]);
+		this->elements[index] = (nJson*) malloc(sizeof(new_attr));
+		memcpy(this->elements[index], &new_attr, sizeof(new_attr));
+		return E_OK;
+	}
+
+	return E_INDEX_OUT_OF_BOUND;
+}
+
 nJson* njson_write(nJson* this, FILE* output) {
 	if (this->name) {
 		fprintf(output, "\"%s\":", this->name);

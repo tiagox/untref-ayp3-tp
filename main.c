@@ -4,10 +4,16 @@
 
 #include "nJson.h"
 
+/**
+ * Códigos de error que retornará la aplicación.
+ */
 enum errors {
 	E_SUCCESS = 0, E_WRONG_ARGS, E_FILE_ACCESS
 };
 
+/**
+ * Imprime un texto con ejemplos de uso y la descripción de cada parámetro.
+ */
 void print_help() {
 	printf("Generador de datos en formato JSON.\n\n");
 	printf("\n");
@@ -79,6 +85,13 @@ int main(int argc, char **argv) {
 		njson_set_value(&rev_attr, "rev", rev_value, strlen(rev_value) + 1, FALSE, &write_string);
 		njson_add_element(&root, &rev_attr);
 		njson_release(&rev_attr);
+
+		nJson to_remove_attr;
+		char* to_remove_value = "this attribute will be removed";
+		njson_init(&to_remove_attr);
+		njson_set_value(&to_remove_attr, "to_remove", to_remove_value, strlen(to_remove_value) + 1, FALSE, &write_string);
+		njson_add_element(&root, &to_remove_attr);
+		njson_release(&to_remove_attr);
 
 		nJson modified_attr;
 		char* modified_value = "Wed, 27 Apr 2011 22:18:51 +0000";
@@ -184,6 +197,13 @@ int main(int argc, char **argv) {
 		njson_add_element(&contents_array_0, &path_attr);
 		njson_release(&path_attr);
 
+		nJson to_remove_attr;
+		char* to_remove_value = "this attribute will be removed";
+		njson_init(&to_remove_attr);
+		njson_set_value(&to_remove_attr, "to_remove", to_remove_value, strlen(to_remove_value) + 1, FALSE, &write_string);
+		njson_add_element(&contents_array_0, &to_remove_attr);
+		njson_release(&to_remove_attr);
+
 		nJson photo_info_attr;
 		njson_init(&photo_info_attr);
 		njson_set_value(&photo_info_attr, "photo_info", 0x0, 0, FALSE, &write_njson);
@@ -262,21 +282,6 @@ int main(int argc, char **argv) {
 		njson_add_element(&root, &contents_array);
 		njson_release(&contents_array);
 
-#if 0
-		// Pruebas de función modificar_njson()
-		// Se cambiara el valor del atributo `"bytes":0` a `"bytes":32` en el nJson raiz
-		int valor = 32;
-		modificar_njson(&root, &root, "bytes", &valor, sizeof(valor));
-
-		// Pruebas de funcion eliminar_njson()
-		// Se eliminara el valor del atributo "rev" del nJson raiz.
-		//eliminar_njson(&root, &root, "rev");
-
-		// Pruebas de funcion eliminar_njson()
-		// Se eliminara el valor del atributo "bytes" del nJson contents que esta dentro del Json raiz.
-		//eliminar_njson(&root, &contents, "bytes");
-#endif
-
 		nJson revision_attr;
 		int revision_value = 29007;
 		njson_init(&revision_attr);
@@ -284,6 +289,47 @@ int main(int argc, char **argv) {
 		njson_add_element(&root, &revision_attr);
 		njson_release(&revision_attr);
 	}
+
+#if 0
+
+	// Prueba de eliminación y edición de atributos.
+	{
+		// Se elimina un atributo de primer nivel.
+		njson_remove_element(&root, "to_remove");
+
+		// Obtengo el nodo llamado `contents`.
+		nJson* contents = 0x0;
+		njson_get_element(&root, "contents", &contents);
+
+		// Se remueve un atriburo del objeto `contents`.
+		nJson* contents_0 = 0x0;
+		njson_get_array_element(contents, 0, &contents_0);
+		njson_remove_element(contents_0, "to_remove");
+
+		// Se actualiza un atributo del objeto `contents`.
+		nJson new_root_attr;
+		char* new_root_value = "~/home/$USER/dropbox";
+		njson_init(&new_root_attr);
+		njson_set_value(&new_root_attr, "root", new_root_value, strlen(new_root_value) + 1, FALSE, &write_string);
+		njson_update_element(contents_0, "root", &new_root_attr);
+		njson_release(&new_root_attr);
+
+		// Se actualiza el segundo elemento del array `lat_long`.
+		nJson* photo_info = 0x0;
+		njson_get_element(contents_0, "photo_info", &photo_info);
+
+		nJson* lat_long = 0x0;
+		njson_get_element(photo_info, "lat_long", &lat_long);
+
+		nJson new_lat_long_1;
+		double new_lat_long_1_value = 89.12038712307282;
+		njson_init(&new_lat_long_1);
+		njson_set_value(&new_lat_long_1, 0x0, &new_lat_long_1_value, sizeof(double), FALSE, &write_double);
+		njson_update_array_element(lat_long, 1, &new_lat_long_1);
+		njson_release(&new_lat_long_1);
+	}
+
+#endif
 
 	njson_write(&root, output_file);
 
