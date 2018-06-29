@@ -81,9 +81,17 @@ nJson* njson_clone(nJson* this, nJson* target) {
 	return this;
 }
 
-nJson* njson_add_element(nJson* this, nJson* attr) {
+err_code njson_add_element(nJson* this, nJson* element) {
+	if (this->is_array && element->name) {
+		return E_NAME_NOT_ALLOWED_FOR_ARRAY_ELEMENT;
+	}
+
+	if (!this->is_array && !element->name) {
+		return E_NAME_REQUIRED_FOR_ATTRIBUTES;
+	}
+
 	nJson new_attr;
-	njson_clone(attr, &new_attr);
+	njson_clone(element, &new_attr);
 
 	this->element_count += 1;
 	this->elements = (nJson**) realloc(this->elements, this->element_count * sizeof(nJson*));
@@ -97,7 +105,7 @@ nJson* njson_add_element(nJson* this, nJson* attr) {
 		this->value_size = 0x0;
 	}
 
-	return this;
+	return E_OK;
 }
 
 err_code njson_remove_element(nJson* this, const char* name) {
@@ -155,15 +163,19 @@ err_code njson_get_array_element(nJson* this, unsigned index, nJson** element) {
 	return E_INDEX_OUT_OF_BOUND;
 }
 
-err_code njson_update_element(nJson* this, const char* name, nJson* attr) {
+err_code njson_update_element(nJson* this, const char* name, nJson* element) {
 	if (this->is_array) {
 		return E_OPERATION_NOT_ALLOWED;
+	}
+
+	if (!element->name) {
+		return E_NAME_REQUIRED_FOR_ATTRIBUTES;
 	}
 
 	for (int i = 0; i < this->element_count; ++i) {
 		if (strcmp(this->elements[i]->name, name) == 0) {
 			nJson new_attr;
-			njson_clone(attr, &new_attr);
+			njson_clone(element, &new_attr);
 			njson_release(this->elements[i]);
 			memcpy(this->elements[i], &new_attr, sizeof(new_attr));
 			return E_OK;
@@ -173,14 +185,18 @@ err_code njson_update_element(nJson* this, const char* name, nJson* attr) {
 	return E_ELEMENT_NOT_FOUND;
 }
 
-err_code njson_update_array_element(nJson* this, unsigned index, nJson* attr) {
+err_code njson_update_array_element(nJson* this, unsigned index, nJson* element) {
 	if (!this->is_array) {
 		return E_OPERATION_NOT_ALLOWED;
 	}
 
+	if (element->name) {
+		return E_NAME_NOT_ALLOWED_FOR_ARRAY_ELEMENT;
+	}
+
 	if (index < this->element_count) {
 		nJson new_attr;
-		njson_clone(attr, &new_attr);
+		njson_clone(element, &new_attr);
 		njson_release(this->elements[index]);
 		free(this->elements[index]);
 		this->elements[index] = (nJson*) malloc(sizeof(new_attr));

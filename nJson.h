@@ -18,7 +18,13 @@ typedef enum _boolean {
  * @type err_code
  */
 typedef enum _err_code {
-	E_OK = 0, E_INVALID_ARGS_COMBINATION, E_OPERATION_NOT_ALLOWED, E_ELEMENT_NOT_FOUND, E_INDEX_OUT_OF_BOUND
+	E_OK = 0,
+	E_INVALID_ARGS_COMBINATION,
+	E_OPERATION_NOT_ALLOWED,
+	E_ELEMENT_NOT_FOUND,
+	E_INDEX_OUT_OF_BOUND,
+	E_NAME_NOT_ALLOWED_FOR_ARRAY_ELEMENT,
+	E_NAME_REQUIRED_FOR_ATTRIBUTES
 } err_code;
 
 /**
@@ -96,7 +102,7 @@ nJson* njson_clone(nJson* this, nJson* target);
  * @param element nJson que será agregado como atributo en el nJson `this`.
  * @return nJson* Puntero al nJson con el cual se operá.
  */
-nJson* njson_add_element(nJson* this, nJson* element);
+err_code njson_add_element(nJson* this, nJson* element);
 
 /**
  * Elimina un atributo contenido en el nodo.
