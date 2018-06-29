@@ -15,9 +15,10 @@ typedef enum _boolean {
 
 /**
  * Dato enumerado para devolver los códigos de errores posibles en el uso del TDA nJson.
+ * @type err_code
  */
 typedef enum _err_code {
-	E_OK = 0, E_INVALID_ARGS_COMBINATION
+	E_OK = 0, E_INVALID_ARGS_COMBINATION, E_OPERATION_NOT_ALLOWED, E_ELEMENT_NOT_FOUND, E_INDEX_OUT_OF_BOUND
 } err_code;
 
 /**
@@ -57,14 +58,6 @@ typedef struct _nJson {
 	 */
 	struct _nJson** elements;
 	/**
-	 * @deprecated
-	 */
-	struct _nJson* children;
-	/**
-	 * @deprecated
-	 */
-	struct _nJson* next;
-	/**
 	 * Función para escribir el tipo de dato especifico guardado como valor del nodo.
 	 */
 	writer write;
@@ -100,11 +93,54 @@ nJson* njson_clone(nJson* this, nJson* target);
 /**
  * Agrega un atributo al nJson especificado.
  * @param this nJson sobre el cual operará.
- * @param attribute nJson que será agregado como atributo en el nJson `this`.
- * @param attribute_size Tamaño en memoria del nJson `child`
+ * @param element nJson que será agregado como atributo en el nJson `this`.
  * @return nJson* Puntero al nJson con el cual se operá.
  */
-nJson* njson_add_element(nJson* this, nJson* attribute);
+nJson* njson_add_element(nJson* this, nJson* element);
+
+/**
+ * Elimina un atributo contenido en el nodo.
+ * @param this nJson al cual se le eliminará el elemento.
+ * @param name Nombre del elemento a eliminar.
+ * @return err_code Código de error resultado de la operación.
+ */
+err_code njson_remove_element(nJson* this, const char* name);
+
+/**
+ * Retorna un elemento contenido en un nodo por medio del nombre del atributo.
+ * @param this nJson sobre el cual operará.
+ * @param name Nombre del elemento a retornar.
+ * @param element Puntero a un nodo nJson en el cual se devuelve una copia del elemento encontrado.
+ * @return err_code Código de error resultado de la operación.
+ */
+err_code njson_get_element(nJson* this, const char* name, nJson** element);
+
+/**
+ * Retorna un elemento contenido en un array por medio del índice del mismo.
+ * @param this nJson sobre el cual operará.
+ * @param index Índice del elemento a retornar.
+ * @param element Puntero a un nodo nJson en el cual se devuelve una copia del elemento encontrado.
+ * @return err_code Código de error resultado de la operación.
+ */
+err_code njson_get_array_element(nJson* this, unsigned index, nJson** element);
+
+/**
+ * Reemplaza un atributo contenido en un nodo por otro por medio del nombre del atributo.
+ * @param this nJson sobre el cual operará.
+ * @param name Nombre del elemento a reemplazar.
+ * @param element nJson que reemplazará al atributo existente.
+ * @return err_code Código de error resultado de la operación.
+ */
+err_code njson_update_element(nJson* this, const char* name, nJson* element);
+
+/**
+ * Reemplaza un elemento contenido en un array por otro por medio del íncide del mismo.
+ * @param this nJson sobre el cual operará.
+ * @param index Índice del elemento a reemplazar.
+ * @param element nJson que reemplazará al atributo existente.
+ * @return err_code Código de error resultado de la operación.
+ */
+err_code njson_update_array_element(nJson* this, unsigned index, nJson* element);
 
 /**
  * Escribe el texto que representa al nJson en el descriptor de archivo provisto a la función.
@@ -152,38 +188,5 @@ void write_float(FILE* output, void* value);
  * Escribe un flotante de doble presición como texto en el archivo espeficado.
  */
 void write_double(FILE* output, void* value);
-
-/******************************************************************************
- * Funciones necesarias para las consignas de la entrega 3
- ******************************************************************************/
-
-/*
- * Funcion que busca un Json padre de atributos.
- * @param. nJson raiz.
- * @param. nJson buscado.
- * @param. nJson para devolver el resultado.
- * @return.  retorna un puntero al nJson encontrado.
- */
-nJson* buscar_njson(nJson*, nJson*, nJson*);
-
-/*
- * Funcion para modificar alguun valor de un nJson
- * @param. nJson raiz.
- * @param. nJson a modificar.
- * @param. char* name del valor a nodificar.
- * @param. puntero void, valor nuevo.
- * @param. longitud del valor nuevo.
- * @return: retorna nJson raiz modificado.
- */
-nJson* modificar_njson(nJson*, nJson*, char*, void*, unsigned);
-
-/*
- * Funcion utilizadapara elimiinar un nJson.
- * @param. nJson raiz.
- * @param. nJson padre de un atributo a eliminar.
- * @param. char* name del atributo a eliminar.
- * @return: retorna el nJson raiz modificado.
- */
-nJson* eliminar_njson(nJson*, nJson*, char*);
 
 #endif /* _NJSON_H_ */

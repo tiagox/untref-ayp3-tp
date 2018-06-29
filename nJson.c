@@ -7,8 +7,6 @@ nJson* njson_init(nJson* this) {
 	this->is_array = FALSE;
 	this->element_count = 0;
 	this->elements = 0x0;
-	this->children = 0x0; // deprecated
-	this->next = 0x0; // deprecated
 	this->write = 0x0;
 
 	return this;
@@ -154,71 +152,9 @@ void njson_release(nJson* this) {
 	}
 }
 
-nJson* buscar_njson(nJson* this, nJson* buscado, nJson* encontrado) {
-	if (this->children) {
-		nJson* current = this->children;
-		while (current->next != 0x0 && (strcmp(current->next->name, buscado->name) != 0)) {
-			if (this->children->children) {
-				buscar_njson(this->children, buscado, encontrado);
-			}
-			current = current->next;
-		}
-		encontrado = current->next;
-	}
-	return this;
-}
-
-nJson* eliminar_njson(nJson* this, nJson* a_modificar, char* name_atributo) {
-	nJson* encontrado = this;
-	nJson* padre = 0x0;
-
-	if (strcmp(this->name, a_modificar->name) != 0) {
-		buscar_njson(this, a_modificar, encontrado);
-	}
-
-	if (encontrado->children) {
-		nJson* current = encontrado->children;
-
-		while (current->next != 0x0 && (strcmp(current->name, name_atributo) != 0)) {
-			padre = current;
-			current = current->next;
-		}
-		padre->next = padre->next->next;
-
-		//njson_release(current->next);
-
-		//current->next=NULL;
-		current->next = padre->next->next;
-
-	}
-	return this;
-}
-
-nJson* modificar_njson(nJson* this, nJson* a_modificar, char* name_atribute, void* new_value, unsigned long_new_value) {
-	nJson* encontrado = this;
-
-	if (strcmp(this->name, a_modificar->name) != 0) {
-		buscar_njson(this, a_modificar, encontrado);
-	}
-
-	if (encontrado->children) {
-		nJson* current = encontrado->children;
-		while ((strcmp(current->name, name_atribute) != 0) && current->next != 0x0) {
-			current = current->next;
-		}
-
-		memcpy(current->value, new_value, long_new_value);
-	} else {
-		printf("No existe atributo \" %s \" !! \n", name_atribute);
-	}
-
-	return this;
-}
-
 /******************************************************************************
- * Funciones auxiliares para escribir los tipos de datos especificos.
- * Se agrega a todas el parametro unsigned cantidad.
- *****************************************************************************/
+ * Funciones auxiliares para imprimir tipos de datos soportados por nJson
+ ******************************************************************************/
 
 void write_njson(FILE* output, void* value) {
 	njson_write((nJson*) value, output);
