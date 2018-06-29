@@ -8,8 +8,7 @@ nJson.o: nJson.c
 	gcc -c nJson.c -I ./
 
 clean:
-	rm -rf *.o
-	rm -rf json_generator
+	rm -f *.o json_generator 
 
 memchk:
 	valgrind --leak-check=full ./json_generator -c
