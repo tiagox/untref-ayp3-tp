@@ -18,12 +18,33 @@ typedef enum _boolean {
  * @type err_code
  */
 typedef enum _err_code {
+	/**
+	 * La ejecución finalizó sin errores.
+	 */
 	E_OK = 0,
+	/**
+	 * La combinación de argumentos es inválida. No es posible que un nodo sea un array y tenga un valor al mismo tiempo.
+	 */
 	E_INVALID_ARGS_COMBINATION,
+	/**
+	 * La operación que se está intentando llevar a cabo no es posible para la configuración actual del nodo.
+	 */
 	E_OPERATION_NOT_ALLOWED,
+	/**
+	 * No se pudo encontrar un elemento dentro de los atributos del objeto con el nombre indicado.
+	 */
 	E_ELEMENT_NOT_FOUND,
+	/**
+	 * El índice indicado está fuera del rango de los elementos del array.
+	 */
 	E_INDEX_OUT_OF_BOUND,
+	/**
+	 * Un nodo que se agrega como elemento de un array no puede tener un nombre especificado.
+	 */
 	E_NAME_NOT_ALLOWED_FOR_ARRAY_ELEMENT,
+	/**
+	 * Un nodo que se agrega como un atributo de un objeto debe tener un nombre especificado.
+	 */
 	E_NAME_REQUIRED_FOR_ATTRIBUTES
 } err_code;
 
