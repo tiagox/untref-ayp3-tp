@@ -292,6 +292,53 @@ int main(int argc, char **argv) {
 
 #if 0
 
+	// Prueba de actualizar el contentido del atributo `contents`
+	{
+		nJson* contents = 0x0;
+		int value = 1;
+		njson_get_element(&root, "contents", &contents);
+		njson_set_value(contents, "contents", &value, sizeof(int), FALSE, &write_int);
+	}
+
+#endif
+
+#if 0
+
+	// Prueba de agregar un array de enteros
+	{
+		nJson enteros_array;
+		njson_init(&enteros_array);
+		njson_set_value(&enteros_array, "enteros", 0x0, 0, TRUE, &write_njson);
+
+		nJson enteros_array_0;
+		int enteros_array_0_value = 1;
+		njson_init(&enteros_array_0);
+		njson_set_value(&enteros_array_0, 0x0, &enteros_array_0_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&enteros_array, &enteros_array_0);
+		njson_release(&enteros_array_0);
+
+		nJson enteros_array_1;
+		int enteros_array_1_value = 2;
+		njson_init(&enteros_array_1);
+		njson_set_value(&enteros_array_1, 0x0, &enteros_array_1_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&enteros_array, &enteros_array_1);
+		njson_release(&enteros_array_1);
+
+		nJson enteros_array_2;
+		int enteros_array_2_value = 3;
+		njson_init(&enteros_array_2);
+		njson_set_value(&enteros_array_2, 0x0, &enteros_array_2_value, sizeof(int), FALSE, &write_int);
+		njson_add_element(&enteros_array, &enteros_array_2);
+		njson_release(&enteros_array_2);
+
+		njson_add_element(&root, &enteros_array);
+		njson_release(&enteros_array);
+	}
+
+#endif
+
+#if 0
+
 	// Prueba de eliminación y edición de atributos.
 	{
 		// Se elimina un atributo de primer nivel.
