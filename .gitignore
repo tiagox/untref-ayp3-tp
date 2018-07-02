@@ -1,4 +1,7 @@
+.settings/
 /Debug/
 /Release/
 /json_generator
+.cproject
+.project
 *.o
